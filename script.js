@@ -17,7 +17,7 @@ function checkPassword() {
 function generateLink() {
     const longUrl = document.getElementById('url').value;
     const title = document.getElementById('title').value;
-    const backhalf = document.getElementById('backhalf').value;
+    const backhalf = document.getElementById('backhalf').value.trim();
     const generateQR = document.getElementById('qr').checked;
 
     if (!longUrl) {
@@ -32,7 +32,14 @@ function generateLink() {
     };
 
     if (title) payload.title = title;
-    if (backhalf) payload.custom_bitlink = `bit.ly/${backhalf}`;
+    if (backhalf) {
+        // Validate backhalf format
+        if (!/^[a-zA-Z0-9_-]{1,30}$/.test(backhalf)) {
+            alert('Backhalf can only contain:\n- Letters A-Z (case insensitive)\n- Numbers 0-9\n- Underscores (_)\n- Hyphens (-)\nMax 30 characters');
+            return;
+        }
+        payload.custom_bitlink = `bit.ly/${backhalf.replace(/^bit\.ly\//, '')}`;
+    }
 
     fetch('https://api-ssl.bitly.com/v4/shorten', {
         method: 'POST',
@@ -42,7 +49,12 @@ function generateLink() {
         },
         body: JSON.stringify(payload)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw err; });
+        }
+        return response.json();
+    })
     .then(data => {
         let resultHtml = `<p>Short URL: <a href="${data.link}" target="_blank">${data.link}</a></p>`;
         
@@ -61,7 +73,8 @@ function generateLink() {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error generating link');
+        const errorMsg = error.description || 'Error generating link';
+        alert(`Error: ${errorMsg}\n\nPossible reasons:\n- Custom backhalf already exists\n- Invalid characters in backhalf\n- API rate limit reached`);
     });
 }
 

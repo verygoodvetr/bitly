@@ -1,0 +1,29 @@
+body {
+    background-color: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.form-box, .auth-box {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.header h1 {
+    color: #2d3436;
+    font-weight: 600;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+#result {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

@@ -54,7 +54,7 @@ async function generateLink() {
         return;
     }
 
-    if (backhalf && !/^[a-z0-9_-]{5,30}$/i.test(backhalf)) {
+    if (backhalf && !/^[a-z0-9_-]{5,30}$/.test(backhalf)) {
         alert('Custom backhalf must be:\n5-30 characters\nLetters, numbers, -, _');
         return;
     }
@@ -69,7 +69,8 @@ async function generateLink() {
         };
 
         if (backhalf) {
-            payload.custom_bitlink = `bit.ly/${backhalf.replace(/^bit\.ly\//, '')}`;
+            const cleanedBackhalf = backhalf.replace(/^bit\.ly\//, '').toLowerCase(); // Convert to lowercase
+            payload.custom_bitlink = `bit.ly/${cleanedBackhalf}`;
         }
 
         // API call
